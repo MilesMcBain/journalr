@@ -6,7 +6,7 @@ output: html_document
 ---
 
 #Problem Statement 
-R's greatest strength as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g `rmarkdown`, `knitr`). The community has also built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also been developed e.g. (`devtools`. `remake`, `testthat`, `rhub`,`githg`). 
+R's greatest strength as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g `rmarkdown`, `knitr`). The community has also built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also been developed e.g. (`devtools`. `remake`, `testthat`, `rhub`,`githug`). 
 
 If we consider the facets of reproducibility outlined in the [rOpenSci Guide](http://ropensci.github.io/reproducibility-guide/sections/introduction/), R is currently weakest in the area of Providence. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.
 
@@ -37,11 +37,12 @@ The proposed package would allow teams to instantiate a journal file object whic
 ###Datasets
 For example:
 ```{r, eval = FALSE}
-register("//datastore/project/datafile.csv", read_csv, data_file, immutatble = TRUE)
+register("//datastore/project/datafile.csv", read_csv, data_file, immutable = TRUE)
 ```
 Would source a file from the data store and tabulate summary statistics and store them for later comparison and verification. The record would be stored with the name in code, in this case `data_file`. The journal record could be made immutable, forcing analysts to register new names for updated data sets. 
 
 Other things that could be registered in the journal:
+
 * Data objects representing useful constants
 * Package functions/namespaces (to later verify functions are not masked)
 * S3/S4 R objects.
