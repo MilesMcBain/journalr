@@ -75,7 +75,7 @@ Before execution the code can be examined for validity using R's non-standard ev
 
 * Check objects registered in the journal are not redefined anywhere
 * `verify()` all objects that are registered in the journal, optionally `verify_remote()`.
-* Care no uncommitted/unpushed changes to analysis repository.
+* Check no uncommitted/unpushed changes to analysis repository.
 
 During execution the `record` method collects data to store in the journal entry. You could imagine it employing functions from `broom` and `modelr` to do so. Other things one might want to record:
 
