@@ -6,9 +6,9 @@ output: html_document
 ---
 
 #Problem Statement 
-R's greatest strength as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g `rmarkdown`, `knitr`). The community has also built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also been developed e.g. (`devtools`. `remake`, `testthat`, `rhub`,`githug`). 
+R's great strengths as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g `rmarkdown`, `knitr`). To solve other aspects of the reproducibility problem, the R community has built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also developed (e.g. `devtools`. `remake`, `testthat`, `rhub`,`githug`). 
 
-If we consider the facets of reproducibility outlined in the [rOpenSci Guide](http://ropensci.github.io/reproducibility-guide/sections/introduction/), R is currently weakest in the area of Providence. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.
+If we consider the facets of reproducibility outlined in the [rOpenSci Guide](http://ropensci.github.io/reproducibility-guide/sections/introduction/), R is currently weak in the area of Providence. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.
 
 This weakness manifests itself in several reproducibility traps one can encounter, particularly when working with teams of analysts. The subject of this proposal is for a data, code, and results journalling tool that can be used to identify and avoid these reproducibility pitfalls.
 
