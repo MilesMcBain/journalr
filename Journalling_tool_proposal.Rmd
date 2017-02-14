@@ -39,7 +39,7 @@ For example:
 ```{r, eval = FALSE}
 register("//datastore/project/datafile.csv", read_csv, data_file, immutable = TRUE)
 ```
-Would source a file from the data store and tabulate summary statistics and store them for later comparison and verification. The record would be stored with the name in code, in this case `data_file`. The journal record could be made immutable, forcing analysts to register new names for updated data sets. 
+Would source a file from the data store, tabulating summary statistics for later verification. The record would be stored with the name in code, in this case `data_file`. The journal record could be made immutable, forcing analysts to register new names for updated data sets. 
 
 Other things that could be registered in the journal:
 
@@ -72,7 +72,7 @@ Before execution the code can be examined for validity using R's non-standard ev
 
 * Check objects registered in the journal are not redefined anywhere
 * `verify()` all objects that are registered in the journal, optionally `verify_remote()`.
-* Check there are no uncommitted/unpushed changes to analysis repository.
+* Care no uncommitted/unpushed changes to analysis repository.
 
 During execution the `record` method collects data to store in the journal entry. You could imagine it employing functions from `broom` and `modelr` to do so. Other things one might want to record:
 
@@ -83,7 +83,7 @@ Post execution an entry would be added to the journal containing the information
 
 * The username.
 * A session or execution identifier to identify code executed as blocks
-    - Allow filtering of journal entries that are related.
+    - To allow filtering of journal entries that are related.
 * The time executed and time taken to execute.
 * The repository branch and version.
 * Warnings encountered.
@@ -91,7 +91,7 @@ Post execution an entry would be added to the journal containing the information
 * Contents of local environment (optionally). 
 
 ##Opportunities for Journal Analysis
-With such a rich record of data available, analysis of the data could lead to useful project insights. For example the trend of model scores over time might be suggestive of when the analysis has reached the a point of diminishing returns. 
+With such a rich amount of metadata available, analysis of the data could lead to useful project insights. For example the trend of model scores over time might be suggestive of when the analysis has reached the a point of diminishing returns. 
 
 ##Opportunities for Journal Usage
 Records in the journal could be read by other methods to provide reproducibility utility. For example:
@@ -100,11 +100,11 @@ Records in the journal could be read by other methods to provide reproducibility
 * Tests that generate alerts or errors if certain journaled items trend in an undesirable direction (e.g. model scores getting worse)
 
 ### As a record of analyis
-With larger projects that go through many phases of analysis the journalling method can provide a record of analysis that gives providence for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been tried. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify if the proposed analysis was run.
+With larger projects that go through many iterations of analysis the journalling method can provide a record of analysis that gives providence for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been sufficiently explored. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify if the proposed analysis was run.
 
 Analysis can be a difficult thing to discuss in words due to the 'garden of forking paths' it presents. The ability to recall analysis details from the journal to build a frame of reference for a conversation about potential new approaches has the potential to save a lot of time. 
 
-Applied to this use-case the journal is acting like a traditional labratory notebook.
+Applied to this use-case the journal is acting much like a traditional labratory notebook.
 
 #Estimated Timeline
 The sketch of the software contains many features that are nice but not essential to get utility from the package. Likewise some key facilities like functions to inspect and modify the journal are omitted. Below is a timeline of milestones and features that moves from minimum viable package to feature-rich solution. 
