@@ -13,12 +13,12 @@ If we consider the facets of reproducibility outlined in the [rOpenSci Guide](ht
 This weakness manifests itself in several reproducibility traps one can encounter, particularly when working with teams of analysts. The subject of this proposal is for a data, code, and results journalling tool that can be used to identify and avoid these reproducibility pitfalls.
 
 ## Reproducibility Traps for Teams with the Best of Intentions
-Local copies. They are a the crux of the issues described here. Despite the best of intentions, a team using literate programming with version control best practice can still be fall afoul of them. In my personal experience this is for two main reasons separately driven by data and code.
+Local copies. They are a the crux of the issues described here. Despite the best of intentions, a team using literate programming with version control best practice can still be fall afoul of them. In my personal experience this is for two main reasons, driven separately by data and code.
 
 ### Data Copies
 Data of moderately large size cannot usually be stored in git repositories. This is because repository size can easily blow out to uneconomical levels when tracking changes of large files. Best practice is to store data inputs for analysis in a remote data store. All members of the team can access the same data file which can act as a 'single source of truth' for that data.
 
-Unfortunately when working with moderately large data files (e.g. > 100MB) local copies become necessary due to latency induced by copying data over a network. As soon as a local copy is made, the same latency issue will mean any changes or updates to the data are slow to make it back to the data store. 
+Unfortunately when working with moderately large data files (e.g. > 100MB) local copies become necessary due to latency induced by copying data over a network. As soon as a local copy is made, the same latency issue will mean any changes or updates to the data are slow to propagate back to the data store. 
 
 ### Code Copies
 Local copies of code are the norm when using distributed version control. Even for teams following strict versioning practices, confusion can arise about the code lineage of results due to the existence of working branches where experimental updates are tested before being pulled to the master branch.
@@ -50,7 +50,7 @@ Other things that could be registered in the journal:
 * Package functions/namespaces (to later verify functions are not masked)
 * S3/S4 R objects.
 
-Later when a local copy is read in it can be verified against the journal using stored metadata with:
+Later when a local copy is read in or about to be analysed, it can be verified against the journal using stored metadata with:
 ```{r, eval = FALSE}
 verify(data_file)
 ```
@@ -105,7 +105,7 @@ Records in the journal could be read by other methods to provide reproducibility
 ### As a record of analyis
 With larger projects that go through many iterations of analysis the journalling method can provide a record that is providence for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been sufficiently explored. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify to what extent the proposed analysis was already run.
 
-Analysis can be a difficult thing to discuss in words due to the 'garden of forking paths' it presents. The ability to recall analysis details from the journal to build a frame of reference for a conversation about potential new approaches has the potential to save a lot of time and confusion. 
+Analysis can be a difficult thing to discuss in words due to the 'garden of forking paths' it presents. The ability to recall analysis details from the journal to build a frame of reference for a conversation about new approaches has the potential to save a lot of time and confusion. 
 
 Applied to this use-case the journal is acting much like a traditional labratory notebook.
 
