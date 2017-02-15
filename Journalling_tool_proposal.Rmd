@@ -60,7 +60,6 @@ You could also perform more expensive verification of the remote source, journal
 verify_remote(data_file)
 ```
 
-
 ###Code 
 Code execution journalling could be supported using an expression wrapper:
 ```{r, eval = FALSE}
@@ -93,8 +92,79 @@ Post execution an entry would be added to the journal containing the information
 * The code executed (optionally)
 * Contents of local environment (optionally). 
 
+This approach bears some similarities to a knitr chunk, therefore perhaps it could be included as a chunk option (which is what I believe is discussed [in knitr hooks here](https://yihui.name/knitr/hooks/).
+
+Imagine then something such as this
+
+```
+```{r journal = "Modelling A"}
+
+model_fit <- lm(data = data_file, formula = A ~ B + c)
+
+record(formula = model_fit$call, 
+       fit = broom::glance(model_fit), 
+       score = RMSE(model_fit))
+
+```
+```
+
+This would then wrap `journal` around the chunk.
+
+Perhaps multiple chunks could share the same journal entry name:
+
+```
+```{r fit_lm, journal = "Modelling A"}
+
+model_fit <- lm(data = data_file, formula = A ~ B + c)
+
+```
+```
+
+```
+```{r plot_lm, journal = "Modelling A"}
+
+model_plot <- plot(lm)
+
+```
+```
+
+
+```
+```{r summary_lm, journal = "Modelling A"}
+
+model_glance <- broom::glance(lm)
+model_rmse <- RMSE(model_fit)
+
+record(formula = model_fit$call, 
+       fit = model_glance, 
+       score = model_rmse,
+       figure = model_plot)
+
+```
+```
+
+And so on.
+
+
 ##Opportunities for Journal Analysis
-With such a rich amount of metadata available, analysis of the data could lead to useful project insights. For example the trend of model scores over time might be suggestive of when the analysis has reached the a point of diminishing returns. 
+With such a rich amount of metadata available, analysis of the data could lead to useful project insights. For example the trend of model scores over time might be suggestive of when the analysis has reached the a point of diminishing returns.
+
+You might then imagine a scenario where each journal entry is an entry in a dataframe, which contains information for each model fit:
+
+```{r}
+
+model_fit <- lm(data = mtcars, formula = hp ~ wt)
+
+tibble::tibble(
+  formula = list(model_fit$call), 
+  fit = list(broom::glance(model_fit)), 
+  score = (modelr::rmse(model_fit, mtcars))
+  )
+
+
+```
+
+With the `journal` object having some specially defined S3 methods.
 
 ##Opportunities for Journal Usage
 Records in the journal could be read by other methods to provide reproducibility utility. For example:
