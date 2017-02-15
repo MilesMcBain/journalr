@@ -97,6 +97,7 @@ This approach bears some similarities to a knitr chunk, therefore perhaps it cou
 Imagine then something such as this
 
 ```
+
 ```{r journal = "Modelling A"}
 
 model_fit <- lm(data = data_file, formula = A ~ B + c)
@@ -106,6 +107,7 @@ record(formula = model_fit$call,
        score = RMSE(model_fit))
 
 ```
+
 ```
 
 This would then wrap `journal` around the chunk.
@@ -113,23 +115,28 @@ This would then wrap `journal` around the chunk.
 Perhaps multiple chunks could share the same journal entry name:
 
 ```
+
 ```{r fit_lm, journal = "Modelling A"}
 
 model_fit <- lm(data = data_file, formula = A ~ B + c)
 
 ```
+
 ```
 
 ```
+
 ```{r plot_lm, journal = "Modelling A"}
 
 model_plot <- plot(lm)
 
 ```
+
 ```
 
 
 ```
+
 ```{r summary_lm, journal = "Modelling A"}
 
 model_glance <- broom::glance(lm)
@@ -141,6 +148,7 @@ record(formula = model_fit$call,
        figure = model_plot)
 
 ```
+
 ```
 
 And so on.
