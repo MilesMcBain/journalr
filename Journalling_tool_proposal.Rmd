@@ -129,7 +129,7 @@ Analysis can be a difficult thing to discuss in words due to the 'garden of fork
 Applied to this use-case the journal is acting much like a traditional labratory notebook.
 
 #Feature Breakdown
-Looking toward developing this kind of capability there are many ways to break it down. One idea would be in chrnonlogical order:
+Looking toward developing this kind of capability there are many ways to break it down. One idea would be this chronological order:
     
 * Data registration and verification 'gate'.
 * Exeuction journalling with expression wrapper.
