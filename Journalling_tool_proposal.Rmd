@@ -8,7 +8,7 @@ output: html_document
 #Problem Statement 
 R's great strengths as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g `rmarkdown`, `knitr`). To solve other aspects of the reproducibility problem, the R community has built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also developed (e.g. `devtools`. `remake`, `testthat`, `rhub`,`githug`). 
 
-If we consider the facets of reproducibility outlined in the [rOpenSci Guide](http://ropensci.github.io/reproducibility-guide/sections/introduction/), R is currently weak in the area of Providence. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.
+If we consider the facets of reproducibility outlined in the [rOpenSci Guide](http://ropensci.github.io/reproducibility-guide/sections/introduction/), R is currently weak in the area of Provenance. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.
 
 This weakness manifests itself in several reproducibility traps one can encounter, particularly when working with teams of analysts. The subject of this proposal is for a data, code, and results journalling tool that can be used to identify and avoid these reproducibility pitfalls.
 
@@ -16,7 +16,7 @@ This weakness manifests itself in several reproducibility traps one can encounte
 Local copies. They are a the crux of the issues described here. Despite the best of intentions, a team using literate programming with version control best practice can still be fall afoul of them. In my personal experience this is for two main reasons, driven separately by data and code.
 
 ### Data Copies
-Data of moderately large size cannot usually be stored in git repositories. This is because repository size can easily blow out to uneconomical levels when tracking changes of large files. Best practice is to store data inputs for analysis in a remote data store. All members of the team can access the same data file which can act as a 'single source of truth' for that data.
+Data of moderately large size cannot usually be stored in git repositories. This is because repository size can easily blow out to uneconomical levels when tracking changes of large files. Best practice is to store data inputs for analysis in a remote data store (perhaps with data version control). All members of the team can access the same data file which can act as a 'single source of truth' for that data.
 
 Unfortunately when working with moderately large data files (e.g. > 100MB) local copies become necessary due to latency induced by copying data over a network. As soon as a local copy is made, the same latency issue will mean any changes or updates to the data are slow to propagate back to the data store. 
 
@@ -29,10 +29,10 @@ When it comes time to disseminate results of the analysis via a literate program
 Although the examples make reference to teams, they can just as easily arise in solo work. The problems caused by the necessary use of local copies will manifest themselves as inability to reproduce results leading to uncertainty and debate about the validity of all aspects of the analysis. For analysis that is non-deterministic, for example involving random samples, the possibility can never be fully discounted that analysis discrepancies are due to sample variation. In fact this possibility creates an 'easy-out' that has in my own experience caused discrepancies due to underlying code and data to go unnoticed for too long.
 
 #Proposed Solution
-Here I propose a package intended to provide lightweight, flexible support for data, code and result providence with minimum change to typical workflows. Design is high level at this stage, no implementation has begun.
+Here I propose a package intended to provide lightweight, flexible support for data, code and result provenance with minimum change to typical workflows. Design is high level at this stage, no implementation has begun.
 
 ##Journalling
-The proposed package would allow teams to instantiate a journal file object which lives in the root level of a project directory. The journal would have an R API that would allow `registration` and `verification` of data and results. Some fictional usage is shown below. The verbs used in the API are to be decided upon.
+The proposed package would allow teams to instantiate a journal file object which lives in the root level of a project directory. The journal would have an R API that would allow `registration` and `verification` of data and results. Some fictional usage is shown below. The verbs used in the API are to be decided upon and are very much up for discussion.
 
 ###Datasets
 For example:
@@ -60,6 +60,13 @@ You could also perform more expensive verification of the remote source, journal
 verify_remote(data_file)
 ```
 
+####Interaction with Dat and data version control
+The [Dat](https://github.com/datproject/dat) protocol could be used as a remote sourcing method for registration. In that case `verify()` may be able to get away with very little work, instead leveraging the Dat API.
+
+So far I have not imagined that data version control is a requirement for the journalling workflow. Certainly it would be advisable. The journalling workflow and data version control are complementary. If DVC is in place it will make resolving issues faster after the journal verification tools have raised the alarm. Due to this, you can view the journal as a link source and data version control. 
+
+####Data Diffing
+The ability to deterine diff data is not a prerequisite for verifying it. Diffing is a desireable validation failure diagnostic.
 
 ###Code 
 Code execution journalling could be supported using an expression wrapper:
@@ -103,7 +110,7 @@ Records in the journal could be read by other methods to provide reproducibility
 * Tests that generate alerts or errors if certain journaled items trend in an undesirable direction (e.g. model scores getting worse)
 
 ### As a record of analyis
-With larger projects that go through many iterations of analysis the journalling method can provide a record that is providence for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been sufficiently explored. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify to what extent the proposed analysis was already run.
+With larger projects that go through many iterations of analysis the journalling method can provide a record that is provenance for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been sufficiently explored. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify to what extent the proposed analysis was already run.
 
 Analysis can be a difficult thing to discuss in words due to the 'garden of forking paths' it presents. The ability to recall analysis details from the journal to build a frame of reference for a conversation about new approaches has the potential to save a lot of time and confusion. 
 
