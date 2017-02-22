@@ -95,10 +95,22 @@ Post execution an entry would be added to the journal containing the information
 * A session or execution identifier to identify code executed as blocks
     - To allow filtering of journal entries that are related.
 * The time executed and time taken to execute.
+* The registered objects that were verified.
 * The repository branch and version.
 * Warnings encountered.
 * The code executed (optionally)
 * Contents of local environment (optionally). 
+
+###Literate Code
+The creation of journaled chunks is naturally suggestive of some type of special type of `knitr` chunk for R markdown files. Relevant journal metadata could be rendered along with the code chunk. Example syntax:
+
+      ``{r, journal = "Modelling A"}
+        model_fit <- lm(data = data_file,
+                        formula = A ~ B + c)
+                        ...
+      
+      ``
+Thanks to [Nick Tierney](www.njtierney.com) for the suggestion.
 
 ##Opportunities for Journal Analysis
 With such a rich amount of metadata available, analysis of the data could lead to useful project insights. For example the trend of model scores over time might be suggestive of when the analysis has reached the a point of diminishing returns. 
@@ -116,11 +128,18 @@ Analysis can be a difficult thing to discuss in words due to the 'garden of fork
 
 Applied to this use-case the journal is acting much like a traditional labratory notebook.
 
-#Estimated Timeline
-The sketch of the software contains many features that are nice but not essential to get utility from the package. Likewise some key facilities like functions to inspect and modify the journal are omitted. Below is a timeline of milestones and features that moves from minimum viable package to feature-rich solution. 
+#Feature Breakdown
+Looking toward developing this kind of capability there are many ways to break it down. One idea would be in chrnonlogical order:
+    
+* Data registration and verification 'gate'.
+* Exeuction journalling with expression wrapper.
+* Automated verification by execution wrapper.
+* Journal inspection and modification tools.
+* Incremental Enhancments:
+    - Additional data source/exeuction metadata type support.
 
-|  Time        |  Milestone  |  Features    |
-|-------------:|------------:|-------------:|
-|TODO|TODO|TODO|
+#Estimated Timeline
+TODO
+
 
 

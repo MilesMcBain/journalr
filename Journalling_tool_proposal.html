@@ -126,16 +126,16 @@ $(document).ready(function () {
 
 <div id="problem-statement" class="section level1">
 <h1>Problem Statement</h1>
-<p>R’s greatest strength as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g <code>rmarkdown</code>, <code>knitr</code>). The community has also built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also been developed e.g. (<code>devtools</code>. <code>remake</code>, <code>testthat</code>, <code>rhub</code>,<code>githug</code>).</p>
-<p>If we consider the facets of reproducibility outlined in the <a href="http://ropensci.github.io/reproducibility-guide/sections/introduction/">rOpenSci Guide</a>, R is currently weakest in the area of Providence. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.</p>
+<p>R’s great strengths as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g <code>rmarkdown</code>, <code>knitr</code>). To solve other aspects of the reproducibility problem, the R community has built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also developed (e.g. <code>devtools</code>. <code>remake</code>, <code>testthat</code>, <code>rhub</code>,<code>githug</code>).</p>
+<p>If we consider the facets of reproducibility outlined in the <a href="http://ropensci.github.io/reproducibility-guide/sections/introduction/">rOpenSci Guide</a>, R is currently weak in the area of Provenance. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.</p>
 <p>This weakness manifests itself in several reproducibility traps one can encounter, particularly when working with teams of analysts. The subject of this proposal is for a data, code, and results journalling tool that can be used to identify and avoid these reproducibility pitfalls.</p>
 <div id="reproducibility-traps-for-teams-with-the-best-of-intentions" class="section level2">
 <h2>Reproducibility Traps for Teams with the Best of Intentions</h2>
-<p>Local copies. They are a the crux of the issues described here. Despite the best of intentions, a team using literate programming with version control best practice can still be fall afoul of them. In my personal experience this is for two main reasons separately driven by data and code.</p>
+<p>Local copies. They are a the crux of the issues described here. Despite the best of intentions, a team using literate programming with version control best practice can still be fall afoul of them. In my personal experience this is for two main reasons, driven separately by data and code.</p>
 <div id="data-copies" class="section level3">
 <h3>Data Copies</h3>
-<p>Data of moderately large size cannot usually be stored in git repositories. This is because repository size can easily blow out to uneconomical levels when tracking changes of large files. Best practice is to store data inputs for analysis in a remote data store. All members of the team can access the same data file which can act as a ‘single source of truth’ for that data.</p>
-<p>Unfortunately when working with moderately large data files (e.g. &gt; 100MB) local copies become necessary due to latency induced by copying data over a network. As soon as a local copy is made, the same latency issue will mean any changes or updates to the data are slow to make it back to the data store.</p>
+<p>Data of moderately large size cannot usually be stored in git repositories. This is because repository size can easily blow out to uneconomical levels when tracking changes of large files. Best practice is to store data inputs for analysis in a remote data store (perhaps with data version control). All members of the team can access the same data file which can act as a ‘single source of truth’ for that data.</p>
+<p>Unfortunately when working with moderately large data files (e.g. &gt; 100MB) local copies become necessary due to latency induced by copying data over a network. As soon as a local copy is made, the same latency issue will mean any changes or updates to the data are slow to propagate back to the data store.</p>
 </div>
 <div id="code-copies" class="section level3">
 <h3>Code Copies</h3>
@@ -150,14 +150,17 @@ $(document).ready(function () {
 </div>
 <div id="proposed-solution" class="section level1">
 <h1>Proposed Solution</h1>
-<p>Here I propose a package intended to provide lightweight, flexible support for data, code and result providence with minimum change to typical workflows. Design is high level at this stage, no implementation has begun.</p>
+<p>Here I propose a package intended to provide lightweight, flexible support for data, code and result provenance with minimum change to typical workflows. Design is high level at this stage, no implementation has begun.</p>
 <div id="journalling" class="section level2">
 <h2>Journalling</h2>
-<p>The proposed package would allow teams to instantiate a journal file object which lives in the root level of a project directory. The journal would have an R API that would allow <code>registration</code> and <code>verification</code> of data and results. Some fictional usage is shown below. The verbs used in the API are to be decided upon.</p>
+<p>The proposed package would allow teams to instantiate a journal file object which lives in the root level of a project directory. The journal would have an R API that would allow <code>registration</code> and <code>verification</code> of data and results. Some fictional usage is shown below. The verbs used in the API are to be decided upon and are very much up for discussion.</p>
 <div id="datasets" class="section level3">
 <h3>Datasets</h3>
 <p>For example:</p>
-<pre class="r"><code>register(&quot;//datastore/project/datafile.csv&quot;, read_csv, data_file, immutable = TRUE)</code></pre>
+<pre class="r"><code>register(source = &quot;//datastore/project/datafile.csv&quot;, 
+         method = read_csv, 
+         name = &quot;data_file&quot;, 
+         immutable = TRUE)</code></pre>
 <p>Would source a file from the data store, tabulating summary statistics for later verification. The record would be stored with the name in code, in this case <code>data_file</code>. The journal record could be made immutable, forcing analysts to register new names for updated data sets.</p>
 <p>Other things that could be registered in the journal:</p>
 <ul>
@@ -165,10 +168,19 @@ $(document).ready(function () {
 <li>Package functions/namespaces (to later verify functions are not masked)</li>
 <li>S3/S4 R objects.</li>
 </ul>
-<p>Later when a local copy is read in it can be verified against the journal using stored metadata with:</p>
+<p>Later when a local copy is read in or about to be analysed, it can be verified against the journal using stored metadata with:</p>
 <pre class="r"><code>verify(data_file)</code></pre>
 <p>You could also perform more expensive verification of the remote source, journal record, and local copy:</p>
 <pre class="r"><code>verify_remote(data_file)</code></pre>
+<div id="interaction-with-dat-and-data-version-control" class="section level4">
+<h4>Interaction with Dat and data version control</h4>
+<p>The <a href="https://github.com/datproject/dat">Dat</a> protocol could be used as a remote sourcing method for registration. In that case <code>verify()</code> may be able to get away with very little work, instead leveraging the Dat API.</p>
+<p>So far I have not imagined that data version control is a requirement for the journalling workflow. Certainly it would be advisable. The journalling workflow and data version control are complementary. If DVC is in place it will make resolving issues faster after the journal verification tools have raised the alarm. Due to this, you can view the journal as a link source and data version control.</p>
+</div>
+<div id="data-diffing" class="section level4">
+<h4>Data Diffing</h4>
+<p>The ability to deterine diff data is not a prerequisite for verifying it. Diffing is a desireable validation failure diagnostic.</p>
+</div>
 </div>
 <div id="code" class="section level3">
 <h3>Code</h3>
@@ -182,7 +194,7 @@ $(document).ready(function () {
 <ul>
 <li>Check objects registered in the journal are not redefined anywhere</li>
 <li><code>verify()</code> all objects that are registered in the journal, optionally <code>verify_remote()</code>.</li>
-<li>Care no uncommitted/unpushed changes to analysis repository.</li>
+<li>Check no uncommitted/unpushed changes to analysis repository.</li>
 </ul>
 <p>During execution the <code>record</code> method collects data to store in the journal entry. You could imagine it employing functions from <code>broom</code> and <code>modelr</code> to do so. Other things one might want to record:</p>
 <ul>
@@ -197,11 +209,23 @@ $(document).ready(function () {
 <li>To allow filtering of journal entries that are related.</li>
 </ul></li>
 <li>The time executed and time taken to execute.</li>
+<li>The registered objects that were verified.</li>
 <li>The repository branch and version.</li>
 <li>Warnings encountered.</li>
 <li>The code executed (optionally)</li>
 <li>Contents of local environment (optionally).</li>
 </ul>
+</div>
+<div id="literate-code" class="section level3">
+<h3>Literate Code</h3>
+<p>The creation of journaled chunks is naturally suggestive of some type of special type of <code>knitr</code> chunk for R markdown files. Relevant journal metadata could be rendered along with the code chunk. Example syntax:</p>
+<pre><code>  ``{r, journal = &quot;Modelling A&quot;}
+    model_fit &lt;- lm(data = data_file,
+                    formula = A ~ B + c)
+                    ...
+  
+  ``</code></pre>
+<p>Thanks to <a href="www.njtierney.com">Nick Tierney</a> for the suggestion.</p>
 </div>
 </div>
 <div id="opportunities-for-journal-analysis" class="section level2">
@@ -217,31 +241,29 @@ $(document).ready(function () {
 </ul>
 <div id="as-a-record-of-analyis" class="section level3">
 <h3>As a record of analyis</h3>
-<p>With larger projects that go through many iterations of analysis the journalling method can provide a record that is providence for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been sufficiently explored. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify to what extent the proposed analysis was already run.</p>
-<p>Analysis can be a difficult thing to discuss in words due to the ‘garden of forking paths’ it presents. The ability to recall analysis details from the journal to build a frame of reference for a conversation about potential new approaches has the potential to save a lot of time and confusion.</p>
+<p>With larger projects that go through many iterations of analysis the journalling method can provide a record that is provenance for the current analytical approach. For example a new collaborator or superisor may make a suggestion which you believe has already been sufficiently explored. If you have been journalling all modelling efforts you can easily interrorgate the journal to verify to what extent the proposed analysis was already run.</p>
+<p>Analysis can be a difficult thing to discuss in words due to the ‘garden of forking paths’ it presents. The ability to recall analysis details from the journal to build a frame of reference for a conversation about new approaches has the potential to save a lot of time and confusion.</p>
 <p>Applied to this use-case the journal is acting much like a traditional labratory notebook.</p>
 </div>
 </div>
 </div>
+<div id="feature-breakdown" class="section level1">
+<h1>Feature Breakdown</h1>
+<p>Looking toward developing this kind of capability there are many ways to break it down. One idea would be in chrnonlogical order:</p>
+<ul>
+<li>Data registration and verification ‘gate’.</li>
+<li>Exeuction journalling with expression wrapper.</li>
+<li>Automated verification by execution wrapper.</li>
+<li>Journal inspection and modification tools.</li>
+<li>Incremental Enhancments:
+<ul>
+<li>Additional data source/exeuction metadata type support.</li>
+</ul></li>
+</ul>
+</div>
 <div id="estimated-timeline" class="section level1">
 <h1>Estimated Timeline</h1>
-<p>The sketch of the software contains many features that are nice but not essential to get utility from the package. Likewise some key facilities like functions to inspect and modify the journal are omitted. Below is a timeline of milestones and features that moves from minimum viable package to feature-rich solution.</p>
-<table>
-<thead>
-<tr class="header">
-<th align="right">Time</th>
-<th align="right">Milestone</th>
-<th align="right">Features</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="right">TODO</td>
-<td align="right">TODO</td>
-<td align="right">TODO</td>
-</tr>
-</tbody>
-</table>
+<p>TODO</p>
 </div>
 
 
