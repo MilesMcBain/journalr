@@ -5,7 +5,7 @@ date: "13 February 2017"
 output: html_document
 ---
 
-#Problem Statement 
+# Problem Statement
 R's great strengths as a facilitator of reproducible analysis are due to packages that provide access to literate programming (e.g `rmarkdown`, `knitr`). To solve other aspects of the reproducibility problem, the R community has built a culture of best practice that encourages the use of version control, automation, and software testing. Packages that support these have also developed (e.g. `devtools`. `remake`, `testthat`, `rhub`,`githug`). 
 
 If we consider the facets of reproducibility outlined in the [rOpenSci Guide](http://ropensci.github.io/reproducibility-guide/sections/introduction/), R is currently weak in the area of Provenance. By that I mean, creating provable lineages for data, code, model, and results objects that ensure none can exist in invalid or unexpected states.
